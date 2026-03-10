@@ -4,7 +4,7 @@ import random
 from pygame.locals import *
 pygame.init()
 #generer skærmen ti
-screen=pygame.display.set_mode((600, 600))
+screen=pygame.display.set_mode((300, 300))
 white = [255, 255, 255]
 screen.fill(white)
 pygame.display.update()
@@ -16,10 +16,13 @@ class Cell:
         #skal repræsentere hvor de forskellige vægge kan være.
         self.walls = [True,True,True,True] #venstre, højre, over, nedre
         self.visited = False
+    #en metode som kan bygge væggen op omkring 
     def væggebyg(self):
+        #ideen er at se om en af væggene er sande, og så tegne siderne
         if self.walls[1] == True:
-            pygame.draw.line(screen, [0,0,0], [self.x+150,self.y+150],[self.x+150,self.y-150])
-
+            pygame.draw.line(screen, [0,0,0], [self.x+50,self.y+50],[self.x+50,self.y-50])
+    def tegn(self):
+        pygame.draw.rect(screen,[0,0,200],[100, 100, 400, 100],2)        
 
 
 #definerer hver celle
@@ -38,16 +41,39 @@ labyrint = [[cell00, cell01, cell02],
             [cell10, cell11, cell12],
             [cell20, cell21, cell22]]
 
+labyrint2 = [[1, 2, 3], 
+             [1, 2, 3], 
+             [1, 2, 3]]
+
+def labbyg(lab):
+    for row in lab:
+        for num in row:
+            cell = Cell(num,lab.index(row))
+            cell.væggebyg()
 
 def labyrintalgo():
     for row in labyrint:
         for x in row:
+            #print(labyrint.index(row),row.index(x))
             x.væggebyg()
+            x.tegn()
 
 running = True
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+    if not running:
+        break        
+
+    screen.fill([255,255,255])
+
+    labyrintalgo()
+
+    #pygame.draw.line(screen, [0,0,0], [75,75],[100,100])
+
+    pygame.display.update()
+
+
 
 pygame.quit()
