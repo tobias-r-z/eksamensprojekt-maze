@@ -40,25 +40,98 @@ class Cell:
 
 
 #laver labyrinten som et 2-dimensionelt array
-labyrint2 =[[0, 1, 2], 
-            [0, 1, 2], 
-            [0, 1, 2]]
-labvej =   [[0,0,0],
-            [0,0,0],
-            [0,0,0]]
 
-def labbyg(lab):
-    for y,row in enumerate(lab):
+grid = [[0 for _ in range(3)] for _ in range(3)]
+
+def newway():
+    rows, cols = 3, 3
+
+# lav tom grid
+    grid = [[0 for _ in range(cols)] for _ in range(rows)]
+
+# start position
+    r, c = 0, 0
+    grid[r][c] = 2  # start på path
+
+    while r < rows - 1 or c < cols - 1:
+        moves = []
+
+    # må gå ned
+        if r < rows - 1:
+            moves.append("down")
+
+    # må gå højre
+        if c < cols - 1:
+            moves.append("right")
+
+        move = rand.choice(moves)
+
+        if move == "down":
+            r += 1
+        else:
+            c += 1
+
+        grid[r][c] = 2  # markér path
+    return grid
+
+def opbygning(cell,waygrid,row,col,x,y):
+
+    if col == 2 and cell.end == True:
+        cell.walls [rand.choice([1,3])] = False
+
+        if waygrid[y-1][x] == 2 and cell.start == False:
+            cell.walls[2] = False
+
+        if row[x-1] == 2 and cell.start == False:
+            cell.walls[0] = False
+
+    elif cell.end:
+
+        if waygrid[y-1][x] == 2 and cell.start == True:
+                    cell.walls[2] = False
+
+        if row[x-1] == 2 and cell.start == True:
+                    cell.walls[0] = False
+
+newgrid = newway()
+
+def labwhole(grid):
+    for y,row in enumerate(grid):
+
+        for x,col in enumerate(row):
+            
+            newcell = Cell(x,y,100)
+            opbygning(newcell,grid,row,col,x,y)
+            newcell.væggebyg()
+
+
+
+"""def labbyg(labvej):
+    for y,row in enumerate(labvej):
+        yrow = []
         for x,num in enumerate(row):
-            cell = Cell(x,y,100)
-            vej(cell)
-            cell.væggebyg()
-            cell.startslut(lab)
-            #print(cell.start + cell.end)
+            newcell=Cell(x,y,100)
+            yrow.append(newcell)
+        labvej[y]=yrow
+"""
+"""def labway(labvej):
+        for y,row in enumerate(labvej):
+
+            for x,num in enumerate(row):
+                if num.x-1 == 0 and num.y-1 == 0:
+                    num.start = True    
+                elif num.x-1 == 2 and num.y-1 == 2:
+                    num.end = True
+                if num.end == True:
+                    break
+                if 
+"""
+
+
 
 
             
-def vej(acell):
+"""def vej(acell):
     if acell.start == True:
         labvej[acell.y][acell.x] = 1
         rnd=rand.randint(0,1)
@@ -66,13 +139,13 @@ def vej(acell):
             acell.walls[1]=False
         if rnd == 1:
             acell.walls[3]=False
-
         
     if labvej[(acell.y)-1][(acell).x]==1 or labvej[(acell).y][(acell).x-1]==1:
         labvej[acell.y][acell.x] = 1
+
     #if acell.end == True:
        #labvej[acell.y][acell.x] = 1
-
+"""
 
 
 running = True        
@@ -85,7 +158,7 @@ while running:
 
     screen.fill([255,255,255])
 
-    labbyg(labyrint2)
+    labwhole(newgrid)
 
     pygame.display.update()
 
