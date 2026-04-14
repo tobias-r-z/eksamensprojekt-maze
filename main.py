@@ -26,7 +26,7 @@ class Cell:
         if self.walls[1] == True:
             pygame.draw.line(screen, [0,0,0], [(self.x*100)+100,self.y*100],[(self.x*100)+100,(self.y*100)+100])
         if self.walls[2] == True:
-            pygame.draw.line(screen, [0,0,0], [(self.x*100)+100,self.y*100],[(self.x*100)+100,self.y*100])
+            pygame.draw.line(screen, [0,0,0], [self.x*100, self.y*100], [(self.x*100)+100, self.y*100])
         if self.walls[3] == True:
             pygame.draw.line(screen, [0,0,0], [self.x*100,(self.y*100)+100],[(self.x*100)+100,(self.y*100)+100])
     
@@ -74,24 +74,26 @@ def newway():
         grid[r][c] = 2  # markér path
     return grid
 
-def opbygning(cell,waygrid,row,col,x,y):
+def opbygning(cell,grid,x,y):
+    rows = (len(grid))
+    cols = (len(grid[0]))
 
-    if col == 2 and cell.end == True:
-        cell.walls [rand.choice([1,3])] = False
+    # venstre
+    if x > 0 and grid[y][x-1] == 2:
+        cell.walls[0] = False
 
-        if waygrid[y-1][x] == 2 and cell.start == False:
-            cell.walls[2] = False
+    # højre
+    if x < cols-1 and grid[y][x+1] == 2:
+        cell.walls[1] = False
 
-        if row[x-1] == 2 and cell.start == False:
-            cell.walls[0] = False
+    # op
+    if y > 0 and grid[y-1][x] == 2:
+        cell.walls[2] = False
 
-    elif cell.end:
-
-        if waygrid[y-1][x] == 2 and cell.start == True:
-                    cell.walls[2] = False
-
-        if row[x-1] == 2 and cell.start == True:
-                    cell.walls[0] = False
+    # ned
+    if y < rows-1 and grid[y+1][x] == 2:
+        cell.walls[3] = False
+    #print(cell.walls)
 
 newgrid = newway()
 
@@ -101,52 +103,8 @@ def labwhole(grid):
         for x,col in enumerate(row):
             
             newcell = Cell(x,y,100)
-            opbygning(newcell,grid,row,col,x,y)
+            opbygning(newcell,grid,x,y)
             newcell.væggebyg()
-
-
-
-"""def labbyg(labvej):
-    for y,row in enumerate(labvej):
-        yrow = []
-        for x,num in enumerate(row):
-            newcell=Cell(x,y,100)
-            yrow.append(newcell)
-        labvej[y]=yrow
-"""
-"""def labway(labvej):
-        for y,row in enumerate(labvej):
-
-            for x,num in enumerate(row):
-                if num.x-1 == 0 and num.y-1 == 0:
-                    num.start = True    
-                elif num.x-1 == 2 and num.y-1 == 2:
-                    num.end = True
-                if num.end == True:
-                    break
-                if 
-"""
-
-
-
-
-            
-"""def vej(acell):
-    if acell.start == True:
-        labvej[acell.y][acell.x] = 1
-        rnd=rand.randint(0,1)
-        if rnd == 0:
-            acell.walls[1]=False
-        if rnd == 1:
-            acell.walls[3]=False
-        
-    if labvej[(acell.y)-1][(acell).x]==1 or labvej[(acell).y][(acell).x-1]==1:
-        labvej[acell.y][acell.x] = 1
-
-    #if acell.end == True:
-       #labvej[acell.y][acell.x] = 1
-"""
-
 
 running = True        
 while running:
