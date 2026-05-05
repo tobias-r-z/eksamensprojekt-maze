@@ -1,21 +1,6 @@
-kode til blindgyder:
+kode til prims algoritme
 
-var grid_struktur:
-
-def blindgyder(grid, chance=0.4, max_length=6):
-
-    for y in række.længde
-        for x in kolonne.længde
-
-            if grid_sted == 2:
-                skal en retning vælges.
-
-                hvis der er en nabo som er tom:
-                    skal chancen rulles:
-                        så skal den vej have et id
-                        og griden skal fyldes op med det id.
-        
-def opbygning(grid):
-
-    byg vej baseret på blindgyder.
-
+def prims():
+    liste med celler(grid)
+    
+    liste med mulige bevægelser

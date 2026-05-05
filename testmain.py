@@ -2,26 +2,20 @@
 import pygame
 from pygame.locals import *
 import random as rand
-pygame.init()
 
 
 
-#generer skærmen ti
-screen=pygame.display.set_mode((600, 600))
-white = [255, 255, 255]
-screen.fill(white)
-pygame.display.update()
 #celle til labyrinten
 class Cell:
+
     def __init__(self,x,y,scale):
         self.x=x
         self.y=y
         self.scale=scale
         #skal repræsentere hvor de forskellige vægge kan være.
         self.walls = [True,True,True,True] #venstre, højre, over, nedre
+
     #en metode som kan bygge væggen op omkring 
-        self.start = False
-        self.end = False
     def væggebyg(self):
         #ideen er at se om en af væggene er sande, og så tegne siderne
         if self.walls[0] == True:
@@ -42,7 +36,7 @@ class Cell:
             self.end = True
     
     def posvia(self,visited):
-
+        #rows, cols = 24, 24
         rnddir = []
 
         directions = [
@@ -55,10 +49,31 @@ class Cell:
         for dr, dy, dx in directions:
             nx, ny = self.x+dx, self.y+dy
 
-            if nx>=0 and ny>=0 and not visited[ny][nx]:
+            if cols > nx>=0 and rows > ny>=0 and not visited[ny][nx]:
                 rnddir.append([[self.x,self.y],[nx,ny],dr])
         return rnddir
+
+class labyrint : 
+    def __init__(self):
+        self.row = rows
+        self.col = cols
+        self.grid = [[Cell(x, y, 25) for x in range(cols)] for y in range(rows)]
         
+    
+
+def remove_walls(x1 ,y1 ,x2 ,y2 , dir:str, grid):
+    if dir == "left":
+        grid[y1][x1].walls[0] = False
+        grid[y2][x2].walls[1] = False
+    elif dir == "right":
+        grid[y1][x1].walls[1] = False
+        grid[y2][x2].walls[0] = False
+    elif dir == "up":
+        grid[y1][x1].walls[2] = False
+        grid[y2][x2].walls[3] = False
+    elif dir == "down":
+        grid[y1][x1].walls[3] = False
+        grid[y2][x2].walls[2] = False
 
 
 
@@ -66,8 +81,8 @@ class Cell:
 
 #laver labyrinten som et 2-dimensionelt array
 def generate_rb():
-    rows, cols = 12, 12
-    grid = [[Cell(x, y, 50) for x in range(cols)] for y in range(rows)]
+    #rows, cols = 24, 24
+    grid = [[Cell(x, y, 25) for x in range(cols)] for y in range(rows)]
 
     visited = [[False]*cols for _ in range(rows)]
 
@@ -108,41 +123,26 @@ def generate_rb():
     return grid
 
 def generate_prim():
-    rows, cols = 12, 12
-    grid = [[Cell(x, y, 50) for x in range(cols)] for y in range(rows)]
+    #rows, cols = 24, 24
+    grid = [[Cell(x, y, 25) for x in range(cols)] for y in range(rows)]
     visited = [[False]*cols for _ in range(rows)]
-    posvia=[]
 
-    for i in range(rows*cols):
-        if i == 0:
-            posvia.append(grid[0][0].posvia(visited))
-            visited[0][0] = True
-        else:
-            rand.shuffle(posvia)
-            for t1 , s in enumerate(posvia):
-                
-                rand.shuffle(s)
+    frontier = []
 
-                for t2, v in enumerate(s):
-                    y = posvia[t1][t2][1][1]
-                    x = posvia[t1][t2][1][0]
-                    if visited[y][x] == True:
-                        pass
-                    else:
-                        if posvia[t1][0][2] == "left":
-                            grid[y][x].walls[1]=False
-                            grid[y][x+1].walls[0]=False
-                        elif posvia[t1][0][2] == "right":
-                            grid[y][x].walls[0]=False
-                            grid[y][x-1].walls[1]=False   
-                        elif posvia[t1][0][2] == "up":
-                            grid[y][x].walls[3]=False
-                            grid[y+1][x].walls[2]=False   
-                        elif posvia[t1][0][2] == "down":
-                            grid[y][x].walls[3]=False
-                            grid[y-1][x].walls[2]=False
+    visited[0][0] = True
+    frontier.extend(grid[0][0].posvia(visited))
+
+    while frontier:
+        rand.shuffle(frontier)
+        (x1,y1),(x2,y2),direction = frontier.pop()
+
+        if not visited[y2][x2]:
+            remove_walls(x1,y1,x2,y2,direction,grid)
+
+            visited[y2][x2] = True
+            frontier.extend(grid[y2][x2].posvia(visited))
+
     return grid
-
 
 def labwhole(grid):
     
@@ -152,10 +152,23 @@ def labwhole(grid):
             
             grid[y][x].væggebyg()
 
-algo_input = input()
+algo_input = input("Hvilken algoritme skal bruges? ")
+cols = int(input("Hvor bred skal labyrinten være? "))
+rows = int(input("Hvor høj skal labyrinten være? "))
+celler = int(input("hvor store skal cellerne være (kvadrat)? "))
 
-print("Du har valgt: " + algo_input)
-if algo_input == "RB":
+pygame.init()
+
+#generer skærmen ti
+screen=pygame.display.set_mode((cols*25, rows*25))
+
+white = [255, 255, 255]
+
+screen.fill(white)
+
+pygame.display.update()
+
+if algo_input == "RB" or "rb":
     maze1 = generate_rb()
 if algo_input == "prim":
     maze1 = generate_prim()
