@@ -4,3 +4,24 @@ def prims():
     liste med celler(grid)
     
     liste med mulige bevægelser
+
+
+funktion labwhole(labyrintgitter):
+
+    for y, række i enumerate(labyrintgitter)
+
+        for x, kolonne i enumerate(række)
+
+            celle i labyrintgitter.væg_bygges
+
+
+setup():
+
+    lavbaggrund()
+
+    labwhole(labyrintgitter)
+
+    pygame.display.update()
+
+
+

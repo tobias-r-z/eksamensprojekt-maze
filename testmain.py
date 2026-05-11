@@ -1,6 +1,6 @@
 #improtere pakker til python
 import pygame
-#from pygame.locals import *
+from pygame.locals import *
 import random as rand
 
 #celle til labyrinten
@@ -47,7 +47,11 @@ class Cell:
 #labyrint klasse for mere kompakt kode
 class labyrint : 
     def __init__(self):
+
+        #bygger et 2d array med objekter fra klassen Cell
         self.grid = [[Cell(x, y, celles) for x in range(cols)] for y in range(rows)]
+
+        #bygger et 2d array med booleans.
         self.visited = [[False]*cols for _ in range(rows)]
     
     def remove_walls(self,x1 ,y1 ,x2 ,y2 , dir:str):
@@ -98,7 +102,7 @@ def generate_rb():
     return lab.grid
 
 def generate_prim():
-    #rows, cols = 24, 24
+
     lab = labyrint()
     frontier = []
 
@@ -141,8 +145,11 @@ screen.fill(white)
 
 pygame.display.update()
 
+#generering af recursive backtracking algoritme
 if algo_input.lower() == "rb":
     maze1 = generate_rb()
+
+#generering af prim algoritme
 if algo_input == "prim":
     maze1 = generate_prim()
 
@@ -161,3 +168,4 @@ while running:
     pygame.display.update()
 
 pygame.quit()
+#c4-modellen, 

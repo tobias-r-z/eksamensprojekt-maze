@@ -48,11 +48,11 @@ def newway():
 
 # lav tom grid
     grid = [[0 for _ in range(cols)] for _ in range(rows)]
-
 # start position
     r, c = 0, 0
     grid[r][c] in [2,3]  # start på path
 
+    #while løkke bruges til at gentage path building
     while r < rows - 1 or c < cols - 1:
         moves = []
 
@@ -64,8 +64,9 @@ def newway():
         if c < cols - 1:
             moves.append("right")
 
+        #en tilfældig retning vælges
         move = rand.choice(moves)
-
+        #den retning bliver lagt til positionen
         if move == "down":
             r += 1
         else:
