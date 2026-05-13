@@ -25,9 +25,10 @@ class Cell:
         if self.walls[3] == True:
             pygame.draw.line(screen, [0,0,0], [self.x*self.scale,(self.y*self.scale)+self.scale],[(self.x*self.scale)+self.scale,(self.y*self.scale)+self.scale])
     
+    #funktion der laver et array, som består af alle fie celler rundt om
     def posvia(self,visited):
-        #rows, cols = 24, 24
-        rnddir = []
+
+        rnddir = [] 
 
         directions = [
             ("left", 0, -1),
@@ -36,11 +37,11 @@ class Cell:
             ("down", 1, 0)
         ]
 
-        for dr, dy, dx in directions:
-            nx, ny = self.x+dx, self.y+dy
+        for dr, dy, dx in directions: #beskriver 
+            nx, ny = self.x+dx, self.y+dy #ny celles koordinator erklæres
 
-            if cols > nx>=0 and rows > ny>=0 and not visited[ny][nx]:
-                rnddir.append([[self.x,self.y],[nx,ny],dr])
+            if cols > nx>=0 and rows > ny>=0 and not visited[ny][nx]: #mulige celler tjekkes
+                rnddir.append([[self.x,self.y],[nx,ny],dr]) #nye koordinater lægges til
         return rnddir
 
 
@@ -54,6 +55,7 @@ class labyrint :
         #bygger et 2d array med booleans.
         self.visited = [[False]*cols for _ in range(rows)]
     
+    #funktion der kan fjerne væggene mellem 2 celler
     def remove_walls(self,x1 ,y1 ,x2 ,y2 , dir:str):
         grid = self.grid
         if dir == "left":
@@ -72,12 +74,11 @@ class labyrint :
 
 #laver labyrinten som et 2-dimensionelt array
 def generate_rb():
-    #rows, cols = 24, 24
     lab = labyrint()
 
-    def dfs(r, c):
+    def dfs(r, c): #lokal funktion
 
-        lab.visited[r][c] = True
+        lab.visited[r][c] = True #celle markeres som besøgt
 
         directions = [
             ("left", 0, -1),
@@ -86,17 +87,17 @@ def generate_rb():
             ("down", 1, 0)
         ]
 
-        rand.shuffle(directions)
+        rand.shuffle(directions) #en tilfældig retning udvælges
 
         for dir, dr, dc in directions:
-            nr, nc = r + dr, c + dc
+            nr, nc = r + dr, c + dc #ny celles koordinator erklæres
 
             if 0 <= nr < rows and 0 <= nc < cols and not lab.visited[nr][nc]:
 
                 # fjern vægge mellem celler
                 lab.remove_walls(c,r,nc,nr,dir)
                 
-                dfs(nr, nc)
+                dfs(nr, nc) #rekurtere ny koordinator
 
     dfs(0, 0)
     return lab.grid
@@ -104,31 +105,36 @@ def generate_rb():
 def generate_prim():
 
     lab = labyrint()
-    frontier = []
+    frontier = [] #arrayet som skal holde de mulige 
 
-    lab.visited[0][0] = True
-    frontier.extend(lab.grid[0][0].posvia(lab.visited))
+    lab.visited[0][0] = True #celle markeres som besøgt
 
-    while frontier:
-        rand.shuffle(frontier)
-        (x1,y1),(x2,y2),direction = frontier.pop()
+    frontier.extend(lab.grid[0][0].posvia(lab.visited)) #array forlænges med posvia funktion
 
-        if not lab.visited[y2][x2]:
-            lab.remove_walls(x1,y1,x2,y2,direction)
+    while frontier: #frontier > 0
 
-            lab.visited[y2][x2] = True
-            frontier.extend(lab.grid[y2][x2].posvia(lab.visited))
+        rand.shuffle(frontier) #tilfædig celle udvælges
+
+        (x1,y1),(x2,y2),direction = frontier.pop() #celle erklæres ved de forskellige funktioner
+
+        if not lab.visited[y2][x2]: #er en celle ikke besøgt
+            lab.remove_walls(x1,y1,x2,y2,direction) 
+
+            lab.visited[y2][x2] = True #den ny celle skal nu være besøgt
+            frontier.extend(lab.grid[y2][x2].posvia(lab.visited)) #nye mulige celler tilføjes
 
     return lab.grid
 
+#funktion der bygger labyrinten ud fra en gitterstruktur.
 def labwhole(grid):
     
     for y,row in enumerate(grid):
 
         for x,col in enumerate(row):
             
-            grid[y][x].væggebyg()
+            grid[y][x].væggebyg() #væg bygges
 
+#de forskellige inputs
 algo_input = input("Hvilken algoritme skal bruges? ")
 cols = int(input("Hvor bred skal labyrinten være? "))
 rows = int(input("Hvor høj skal labyrinten være? "))
@@ -136,7 +142,7 @@ celles = int(input("hvor store skal cellerne være (kvadrat)? "))
 
 pygame.init()
 
-#generer skærmen ti
+#generer skærmen i forhold til input
 screen=pygame.display.set_mode((cols*celles, rows*celles))
 
 white = [255, 255, 255]
@@ -153,6 +159,7 @@ if algo_input.lower() == "rb":
 if algo_input == "prim":
     maze1 = generate_prim()
 
+#loop der gennem går hvert frame
 running = True        
 while running:
     for event in pygame.event.get():
@@ -161,11 +168,10 @@ while running:
     if not running:
         break        
 
-    screen.fill([255,255,255])
+    screen.fill([255,255,255]) #skærm bygges
 
-    labwhole(maze1)
+    labwhole(maze1) #labyrintgitter bygges
 
     pygame.display.update()
 
 pygame.quit()
-#c4-modellen, 
